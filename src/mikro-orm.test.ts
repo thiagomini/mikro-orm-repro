@@ -29,10 +29,6 @@ describe('Mikro Orm', () => {
     await orm.close();
   });
 
-  test('should pass', () => {
-    expect(1).toBe(1)
-  });
-
   test('finds all profiles for all users of a company', async () => {
     // Arrange
     const entityManager = orm.em.fork();
