@@ -35,5 +35,9 @@
   ],
   "prettier": {
     "singleQuote": true
+  },
+  "dependencies": {
+    "@mikro-orm/core": "^5.8.4",
+    "@mikro-orm/postgresql": "^5.8.4"
   }
 }
