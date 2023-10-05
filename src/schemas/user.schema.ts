@@ -1,6 +1,5 @@
 import { BigIntType, EntitySchema } from '@mikro-orm/core';
 
-import { Company } from '../entities/company.entity';
 import { Profile } from '../entities/profile.entity';
 import { User } from '../entities/user.entity';
 
@@ -32,13 +31,6 @@ export const userSchema = new EntitySchema<User>({
       type: 'timestamp',
       onCreate: () => new Date(),
       onUpdate: () => new Date(),
-    },
-    company: {
-      entity: () => Company,
-      reference: 'm:1',
-      inversedBy: 'users',
-      ref: true,
-      nullable: true
     },
     profiles: {
       entity: () => Profile,

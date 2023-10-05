@@ -25,7 +25,7 @@ export const profileSchema = new EntitySchema<Profile>({
       entity: () => User,
       reference: 'm:1',
       inversedBy: 'profiles',
-      ref: true
+      mapToPk: true,
     },
   },
 });
