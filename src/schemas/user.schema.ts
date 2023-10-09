@@ -1,7 +1,8 @@
-import { BigIntType, EntitySchema } from '@mikro-orm/core';
+import { EntitySchema } from '@mikro-orm/core';
 
 import { Profile } from '../entities/profile.entity';
 import { User } from '../entities/user.entity';
+import { Id } from '../id.value-object';
 
 
 export const userSchema = new EntitySchema<User>({
@@ -10,7 +11,7 @@ export const userSchema = new EntitySchema<User>({
   forceConstructor: true,
   properties: {
     id: {
-      type: BigIntType,
+      type: Id,
       primary: true,
       autoincrement: true,
     },

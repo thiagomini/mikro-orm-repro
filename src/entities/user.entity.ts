@@ -1,6 +1,7 @@
 import { Collection } from "@mikro-orm/core";
 
 import type { Profile } from "./profile.entity";
+import { Id } from "../id.value-object";
 
 export type CreateUserProps = {
   firstName: string;
@@ -11,7 +12,7 @@ export type CreateUserProps = {
 };
 
 export class User {
-  public readonly id: bigint;
+  public readonly id: Id;
 
   public readonly firstName: string;
 

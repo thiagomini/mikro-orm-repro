@@ -3,6 +3,7 @@ import { MikroORM } from "@mikro-orm/core";
 import { Profile } from "./entities/profile.entity";
 import { User } from "./entities/user.entity";
 import schemas from "./schemas";
+import { Id } from "./id.value-object";
 
 let orm: MikroORM;
 
@@ -28,7 +29,7 @@ describe('Mikro Orm', () => {
     await orm.close();
   });
 
-  test('creates a profile for a user', async () => {
+  test('A profile user id should be a custom type', async () => {
     // Arrange
     const entityManager = orm.em.fork();
     const aUser = new User({
@@ -45,15 +46,18 @@ describe('Mikro Orm', () => {
       imageUrl: 'https://example.com',
       user: aUser.id
     })
-
-    // Act
     await entityManager.persistAndFlush(aProfile);
 
-    // Assert
-    const user = await entityManager.findOne(User, { id: aUser.id }, {
+
+    // Act
+    const userProfile = await entityManager.findOne(Profile, { id: aProfile.id }, {
       refresh: true,
     });
-    expect(user).toBeTruthy();
+
+    // Assert
+    
+    expect(userProfile).toBeTruthy();
+    expect(userProfile.user).toBeInstanceOf(Id)
   })
 
 });
