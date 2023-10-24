@@ -16,6 +16,7 @@ describe('Mikro Orm', () => {
       type: 'postgresql',
       allowGlobalContext: true,
       implicitTransactions: false,
+      debug: true,
     });
     registerFactories(orm)
     await orm.getSchemaGenerator().updateSchema({
