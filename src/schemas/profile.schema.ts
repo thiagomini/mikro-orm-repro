@@ -23,9 +23,10 @@ export const profileSchema = new EntitySchema<Profile>({
     },
     user: {
       entity: () => User,
-      reference: 'm:1',
-      inversedBy: 'profiles',
-      ref: true
+      reference: '1:1',
+      mappedBy: 'profile',
+      ref: true,
+      nullable: true
     },
   },
 });

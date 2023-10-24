@@ -1,6 +1,4 @@
-import { MikroORM } from "@mikro-orm/core";
-
-import { Company } from "./entities/company.entity";
+import { MikroORM, ref } from "@mikro-orm/core";
 import { Profile } from "./entities/profile.entity";
 import { User } from "./entities/user.entity";
 import schemas from "./schemas";
@@ -29,57 +27,60 @@ describe('Mikro Orm', () => {
     await orm.close();
   });
 
-  test('finds all profiles for all users of a company', async () => {
+  test('creates a user and assign a profile to it (persisting later)', async () => {
     // Arrange
     const entityManager = orm.em.fork();
-    const company = new Company({
-      name: 'Acme'
-    });
-    await entityManager.persistAndFlush(company);
 
-    const user1 = new User({
+    const aUser = new User({
       email: 'user@mail.com',
       firstName: 'John',
       lastName: 'Doe',
       createdAt: new Date(),
       updatedAt: new Date(),
-      company
     });
-    const user2 = new User({
-      email: 'user2@mail.com',
-      firstName: 'John2',
-      lastName: 'Doe2',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      company
-    })
-    await entityManager.persistAndFlush([user1, user2]);
 
-    const profileUser1 = new Profile({
+    const aProfile = new Profile({
       imageUrl: 'https://example.com',
-      user: user1
+      user: ref(aUser)
     })
-    const profile2User1 = new Profile({
-      imageUrl: 'https://example.com/2',
-      user: user1
-    })
-    const profileUser2 = new Profile({
-      imageUrl: 'https://example.com',
-      user: user2
-    })
-
-    await entityManager.persistAndFlush([profileUser1, profile2User1, profileUser2]);
-
 
     // Act
-    const companyWithProfiles = await entityManager.findOne(Company, { id: company.id }, {
-      populate: ['users.profiles'],
-      refresh: true
-    });
+   await entityManager.persistAndFlush(aProfile);
 
     // Assert
-    const userWithASingleProfile = companyWithProfiles.users.find(u => u.id === user2.id);
-    expect(userWithASingleProfile.profiles).toHaveLength(1);
+    const userWithProfile = await entityManager.findOne(User, { id: aUser.id }, {
+      populate: ['profile'],
+      refresh: true
+    });
+    expect(userWithProfile.profile).toBeTruthy()
+  });
+
+  test('creates a user and assign a profile to it (persisting earlier)', async () => {
+    // Arrange
+    const entityManager = orm.em.fork();
+    const aUser = new User({
+      email: 'user@mail.com',
+      firstName: 'John',
+      lastName: 'Doe',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    await entityManager.persistAndFlush(aUser);
+
+    const aProfile = new Profile({
+      imageUrl: 'https://example.com',
+      user: ref(aUser)
+    })
+
+    // Act
+   await entityManager.persistAndFlush(aProfile);
+
+    // Assert
+    const userWithProfile = await entityManager.findOne(User, { id: aUser.id }, {
+      populate: ['profile'],
+      refresh: true
+    });
+    expect(userWithProfile.profile).toBeTruthy()
   });
 
 });
