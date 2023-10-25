@@ -1,9 +1,11 @@
-import { MikroORM } from "@mikro-orm/core";
+// use strict
+import { MikroORM, ref } from "@mikro-orm/core";
+
 import { Profile } from "./entities/profile.entity";
-import { User } from "./entities/user.entity";
-import schemas from "./schemas";
 import { registerFactories } from "./entities/register.factories";
+import { User } from "./entities/user.entity";
 import { userFactory } from "./factories/user.factory";
+import schemas from "./schemas";
 
 let orm: MikroORM;
 
@@ -14,23 +16,16 @@ describe('Mikro Orm', () => {
       schema: 'test',
       entities: schemas,
       type: 'postgresql',
-      allowGlobalContext: true,
-      implicitTransactions: false,
       debug: true,
+      allowGlobalContext: true
     });
     registerFactories(orm)
-    await orm.getSchemaGenerator().updateSchema({
-      safe: true,
-    });
+    await orm.getSchemaGenerator().updateSchema();
   });
 
-  beforeEach(async () => {
-    await orm.em.begin()
-  });
 
   afterEach(async () => {
-    orm.em.clear();
-    await orm.em.rollback();
+    await orm.getSchemaGenerator().refreshDatabase();
   });
 
   afterAll(async () => {
@@ -39,12 +34,13 @@ describe('Mikro Orm', () => {
 
   test('creates a user and assign a profile to it (persisting earlier)', async () => {
     // Arrange
-    const entityManager = orm.em;
-    const aUser = await userFactory.create();
+    const entityManager = orm.em.fork();
+    const aUser = await userFactory.create()
+    const userRef = ref(aUser);
 
     const aProfile = new Profile({
       imageUrl: 'https://example.com',
-      userId: aUser.id
+      user: userRef
     })
 
     // Act
@@ -57,5 +53,44 @@ describe('Mikro Orm', () => {
     });
     expect(userWithProfile.profile).toBeTruthy()
   });
+
+  test('activates the setter', async () => {
+    // Arrange
+    const aUser = new User({
+      firstName: 'firstName',
+      lastName: 'lastName',
+      email: 'email@mail.com',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    const userRef = ref(aUser);
+
+    new Profile({
+      imageUrl: 'https://example.com',
+      user: userRef
+    })
+    expect(aUser.profile).toBeTruthy()
+  });
+
+  test('setter should work', () => {
+    // Arrange
+    class ClassWithSetter {
+      public name: string;
+    }
+
+    Object.defineProperty(ClassWithSetter.prototype, 'name', {
+      set() { 
+        this['otherProperty'] = 'setter';
+      }
+    })
+
+    const instance = new ClassWithSetter();
+
+    // Act
+    instance.name = 'name';
+
+    // Assert
+    expect(instance).toHaveProperty('otherProperty', 'setter')
+  })
 });
 

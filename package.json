@@ -25,9 +25,9 @@
     "prettier": "^2.1.1",
     "ts-jest": "^29.1.1",
     "ts-node": "^9.0.0",
-    "typescript": "^5.2.2",
+    "typescript": "5.0.4",
     "unplugin-swc": "^1.4.2",
-    "vitest": "^0.34.6"
+    "vitest": "0.34.5"
   },
   "files": [
     "build/main",
@@ -42,7 +42,7 @@
     "singleQuote": true
   },
   "dependencies": {
-    "@mikro-orm/core": "^5.8.10",
-    "@mikro-orm/postgresql": "^5.8.10"
+    "@mikro-orm/core": "^5.8.4",
+    "@mikro-orm/postgresql": "^5.8.4"
   }
 }

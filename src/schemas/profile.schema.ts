@@ -1,4 +1,4 @@
-import { BigIntType, EntitySchema, ReferenceType } from '@mikro-orm/core';
+import { BigIntType, EntitySchema } from '@mikro-orm/core';
 
 import { Profile } from '../entities/profile.entity';
 import { User } from '../entities/user.entity';
@@ -22,7 +22,7 @@ export const profileSchema = new EntitySchema<Profile>({
     },
     user: {
       entity: () => User,
-      reference: ReferenceType.ONE_TO_ONE,
+      reference: '1:1',
       mappedBy: 'profile',
       ref: true,
       nullable: true

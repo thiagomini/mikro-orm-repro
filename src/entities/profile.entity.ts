@@ -1,5 +1,5 @@
-import { User } from "./user.entity";
-import { Ref, Reference } from '@mikro-orm/core'
+import type { User } from "./user.entity";
+import { Ref } from '@mikro-orm/core'
 
 export class Profile {
   public readonly id: number;
@@ -7,9 +7,10 @@ export class Profile {
   public readonly active: boolean;
   public readonly user?: Ref<User>;
 
-  constructor(props: { imageUrl: string, active?: boolean, id?: number, userId?: number }) {
-    Object.assign(this, props, {
-      user: Reference.createFromPK(User, props.userId)
-    });
+  constructor(props: { imageUrl: string, active?: boolean, id?: number, user?: Ref<User> }) {
+    this.imageUrl = props.imageUrl;
+    this.active = props.active ?? true;
+    this.id = props.id ?? 0;
+    this.user = props.user;
   }
 }
