@@ -3,5 +3,5 @@ import { FactoryGirl, MikroOrmAdapter } from 'factory-girl-ts'
 
 
 export function registerFactories(orm: MikroORM) {
-  FactoryGirl.setAdapter(new MikroOrmAdapter(orm, { shouldFork: false }))
+  FactoryGirl.setAdapter(new MikroOrmAdapter(orm, { shouldFork: true }))
 }

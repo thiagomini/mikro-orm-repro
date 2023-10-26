@@ -1,5 +1,6 @@
-import { User } from "../entities/user.entity";
 import { FactoryGirl } from 'factory-girl-ts'
+
+import { User } from "../entities/user.entity";
 
 export const userFactory = FactoryGirl.define(User, () => ({
   firstName: 'firstName',
