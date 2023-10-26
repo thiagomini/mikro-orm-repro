@@ -31,14 +31,35 @@ describe('Mikro Orm', () => {
     await orm.close();
   });
 
-  test('creates a user and assign a profile to it (persisting earlier)', async () => {
+  test('creates a user and assign a profile to it (using entity)', async () => {
     // Arrange
     const entityManager = orm.em.fork();
     const aUser = await userFactory.create()
 
     const aProfile = new Profile({
       imageUrl: 'https://example.com',
-      userId: aUser.id
+      userOrId: aUser
+    })
+
+    // Act
+   await entityManager.persistAndFlush(aProfile);
+
+    // Assert
+    const userWithProfile = await entityManager.findOneOrFail(User, { id: aUser.id }, {
+      populate: ['profile'],
+      refresh: true
+    });
+    expect(userWithProfile.profile).toBeTruthy()
+  });
+
+  test('creates a user and assign a profile to it (using id)', async () => {
+    // Arrange
+    const entityManager = orm.em.fork();
+    const aUser = await userFactory.create()
+
+    const aProfile = new Profile({
+      imageUrl: 'https://example.com',
+      userOrId: aUser.id
     })
 
     // Act

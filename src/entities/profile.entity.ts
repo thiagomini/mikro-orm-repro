@@ -1,6 +1,13 @@
-import { Ref, Reference } from '@mikro-orm/core'
+import { ref, Ref, Reference } from '@mikro-orm/core';
 
 import { User } from "./user.entity";
+
+export type ProfileProps = {
+  imageUrl: string;
+  active?: boolean;
+  id?: number;
+  userOrId?: User | number;
+}
 
 export class Profile {
   public readonly id: number;
@@ -8,10 +15,14 @@ export class Profile {
   public readonly active: boolean;
   public readonly user?: Ref<User>;
 
-  constructor(props: { imageUrl: string, active?: boolean, id?: number, userId?: number }) {
+  constructor(props: ProfileProps) {
     this.imageUrl = props.imageUrl;
     this.active = props.active ?? true;
     this.id = props.id ?? 0;
-    this.user = Reference.createFromPK(User, props.userId ?? 0);
+    if (props.userOrId instanceof User) {
+      this.user = ref(props.userOrId)
+    } else if (props.userOrId){
+      this.user = Reference.createFromPK(User, props.userOrId)
+    }
   }
 }
