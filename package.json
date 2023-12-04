@@ -41,7 +41,7 @@
     "singleQuote": true
   },
   "dependencies": {
-    "@mikro-orm/core": "^5.9.1",
-    "@mikro-orm/postgresql": "^5.9.1"
+    "@mikro-orm/core": "^5.9.4",
+    "@mikro-orm/postgresql": "^5.9.4"
   }
 }
