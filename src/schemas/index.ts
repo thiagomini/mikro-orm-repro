@@ -1,5 +1,5 @@
-import { companySchema } from "./company.schema";
-import { profileSchema } from "./profile.schema";
-import { userSchema } from "./user.schema";
+import { companyProductsSchema } from './company-products.schema';
+import { companySchema } from './company.schema';
+import { productSchema } from './product.schema';
 
-export default [userSchema, profileSchema, companySchema]
+export default [companySchema, productSchema, companyProductsSchema];

@@ -1,12 +1,12 @@
 import { BigIntType, EntitySchema } from '@mikro-orm/core';
 
+import { CompanyProduct } from '../entities/company-product.entity';
 import { Company } from '../entities/company.entity';
-import { User } from '../entities/user.entity';
+import { ProductEntity } from '../entities/product.entity';
 
 export const companySchema = new EntitySchema<Company>({
   class: Company,
   tableName: 'company',
-  forceConstructor: true,
   properties: {
     id: {
       type: BigIntType,
@@ -16,11 +16,10 @@ export const companySchema = new EntitySchema<Company>({
     name: {
       type: String,
     },
-    users: {
-      entity: () => User,
-      reference: '1:m',
-      mappedBy: 'company',
-      ref: true
+    products: {
+      reference: 'm:n',
+      entity: () => ProductEntity,
+      pivotEntity: () => CompanyProduct,
     },
   },
 });
